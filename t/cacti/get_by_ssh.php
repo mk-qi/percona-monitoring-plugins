@@ -1,6 +1,6 @@
 <?php
 require('test-more.php');
-require('../../scripts/ss_get_by_ssh.php');
+require('../../cacti/scripts/ss_get_by_ssh.php');
 $debug = true;
 
 is(
@@ -506,12 +506,12 @@ is(
 is_deeply(
    netdev_parse( array('device' => 'eth0'), file_get_contents('samples/netdev-001.txt') ),
    array(
-        'NETDEV_rxbytes'   => '99704481',
+        'NETDEV_rxbits'    => '797635848',
         'NETDEV_rxerrs'    => '0',
         'NETDEV_rxdrop'    => '0',
         'NETDEV_rxfifo'    => '0',
         'NETDEV_rxframe'   => '0',
-        'NETDEV_txbytes'   => '21749178',
+        'NETDEV_txbits'    => '173993424',
         'NETDEV_txerrs'    => '0',
         'NETDEV_txdrop'    => '0',
         'NETDEV_txfifo'    => '0',
@@ -519,6 +519,24 @@ is_deeply(
         'NETDEV_txcarrier' => '0',
    ),
    'samples/netdev-001.txt'
+);
+
+is_deeply(
+   netdev_parse( array('device' => 'eth1'), file_get_contents('samples/netdev-002.txt') ),
+   array(
+        'NETDEV_rxbits'    => '182780806318208',
+        'NETDEV_rxerrs'    => '29',
+        'NETDEV_rxdrop'    => '174',
+        'NETDEV_rxfifo'    => '0',
+        'NETDEV_rxframe'   => '29',
+        'NETDEV_txbits'    => '27910856256440',
+        'NETDEV_txerrs'    => '0',
+        'NETDEV_txdrop'    => '0',
+        'NETDEV_txfifo'    => '0',
+        'NETDEV_txcolls'   => '0',
+        'NETDEV_txcarrier' => '0',
+   ),
+   'samples/netdev-002.txt'
 );
 
 is(
@@ -529,8 +547,20 @@ is(
       'items'   => 'jy,jz,k0,k1,k2,k3,k4,k5,k6,k7,k8',
       'device'  => 'eth0',
    )),
-   'jy:99704481 jz:0 k0:0 k1:0 k2:0 k3:21749178 k4:0 k5:0 k6:0 k7:0 k8:0',
+   'jy:797635848 jz:0 k0:0 k1:0 k2:0 k3:173993424 k4:0 k5:0 k6:0 k7:0 k8:0',
    'main(samples/netdev-001.txt)'
+);
+
+is(
+   ss_get_by_ssh( array(
+      'file'    => 'samples/netdev-002.txt',
+      'type'    => 'netdev',
+      'host'    => 'localhost',
+      'items'   => 'jy,jz,k0,k1,k2,k3,k4,k5,k6,k7,k8',
+      'device'  => 'eth1',
+   )),
+   'jy:182780806318208 jz:29 k0:174 k1:0 k2:29 k3:27910856256440 k4:0 k5:0 k6:0 k7:0 k8:0',
+   'main(samples/netdev-002.txt)'
 );
 
 is_deeply(
