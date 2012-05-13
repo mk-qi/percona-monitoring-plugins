@@ -115,7 +115,7 @@ and set the proper configuration variables.  This example shows how to do it
 with an external configuration file, but you can do it any way you please::
 
    debian:~# cp scripts/ss_get_by_ssh.php /usr/share/cacti/site/scripts/
-   debian:~# cat > /usr/share/cacti/site/scripts/ss_get_by_ssh.php.cnf
+   debian:~# cat > /usr/share/cacti/site/scripts/ss_get_by_ssh.php.cnf.php
    <?php
    $ssh_user   = 'cacti';
    $ssh_iden   = '-i /etc/cacti/id_rsa';

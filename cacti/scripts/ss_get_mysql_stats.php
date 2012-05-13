@@ -25,7 +25,7 @@ if ( !array_key_exists('SCRIPT_FILENAME', $_SERVER)
 # in from Cacti will override these.  However, if you leave them blank in Cacti
 # and set them here, you can make life easier.  Instead of defining parameters
 # here, you can define them in another file named the same as this file, with a
-# .cnf extension.
+# .cnf.php extension.
 # ============================================================================
 $mysql_user = 'cactiuser';
 $mysql_pass = 'cactiuser';
@@ -56,8 +56,9 @@ $version = '$VERSION$';
 # ============================================================================
 # Include settings from an external config file (issue 39).
 # ============================================================================
-if ( file_exists(__FILE__ . '.cnf' ) ) {
-   require(__FILE__ . '.cnf');
+$cnf = __DIR__ . '/' . pathinfo(__FILE__, PATHINFO_FILENAME) . '.cnf.php';
+if ( file_exists($cnf) ) {
+   require($cnf);
 }
 
 # Make this a happy little script even when there are errors.

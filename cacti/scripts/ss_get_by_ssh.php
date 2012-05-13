@@ -22,7 +22,7 @@ if ( !array_key_exists('SCRIPT_FILENAME', $_SERVER)
 # CONFIGURATION
 # ============================================================================
 # Define parameters.  Instead of defining parameters here, you can define them
-# in another file named the same as this file, with a .cnf extension.
+# in another file named the same as this file, with a .cnf.php extension.
 # ============================================================================
 $ssh_user   = 'cacti';                          # SSH username
 $ssh_port   = 22;                               # SSH port
@@ -37,7 +37,7 @@ $use_ssh    = TRUE;  # Whether to connect via SSH or not (default yes).
 $debug      = FALSE; # Define whether you want debugging behavior.
 $debug_log  = FALSE; # If $debug_log is a filename, it'll be used.
 
-# Parameters for specific graphs can be specified here, or in the .cnf file.
+# Parameters for specific graphs can be specified here, or in the .cnf.php file.
 $status_server = 'localhost';             # Where to query for HTTP status
 $status_url    = '/server-status';        # The URL path to HTTP status
 $http_user     = '';                      # HTTP authentication
@@ -56,8 +56,9 @@ $version = '$VERSION$';
 # ============================================================================
 # Include settings from an external config file.
 # ============================================================================
-if ( file_exists(__FILE__ . '.cnf' ) ) {
-   require(__FILE__ . '.cnf');
+$cnf = __DIR__ . '/' . pathinfo(__FILE__, PATHINFO_FILENAME) . '.cnf.php';
+if ( file_exists($cnf) ) {
+   require($cnf);
 }
 
 # Make this a happy little script even when there are errors.

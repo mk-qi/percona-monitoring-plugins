@@ -110,7 +110,7 @@ your favorite text editor, and look for a section like the following::
    # in from Cacti will override these.  However, if you leave them blank in Cacti
    # and set them here, you can make life easier.  Instead of defining parameters
    # here, you can define them in another file named the same as this file, with a
-   # .cnf extension.
+   # .cnf.php extension.
    # ============================================================================
    $mysql_user = 'cactiuser';
    $mysql_pass = 'cactiuser';
@@ -130,11 +130,11 @@ A Configuration File
 
 If you don't want to store the configuration options directly into the PHP
 script file, you can create another file with the same name and the filename
-extension ``.cnf``.  Place this in the same directory as the PHP script file,
+extension ``.cnf.php``.  Place this in the same directory as the PHP script file,
 and ensure it is valid PHP.  This file will be included by the PHP script file,
 so you can define the same configuration options there that you might define in
 the PHP script file.  For example, you might create
-``scripts/ss_get_mysql_stats.php.cnf`` with the following contents::
+``scripts/ss_get_mysql_stats.cnf.php`` with the following contents::
 
    <?php
    $mysql_user = "root";
