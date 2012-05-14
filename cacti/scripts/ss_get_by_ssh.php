@@ -58,6 +58,7 @@ $version = '$VERSION$';
 # ============================================================================
 $cnf = __DIR__ . '/' . pathinfo(__FILE__, PATHINFO_FILENAME) . '.cnf.php';
 if ( file_exists($cnf) ) {
+   debug("Found configuration file " . $cnf);
    require($cnf);
 }
 
@@ -895,9 +896,8 @@ function w_parse ( $options, $output ) {
          if ( preg_match('/(\d+) u[^ ]*,/', $line, $words) ) {
             $result['STAT_numusers'] = $words[1];
          }
-         if ( preg_match('/(\d+[,.]\d+)$/', $line, $words) ) {
-            $result['STAT_loadavg']  = $words[1];
-         }
+         $words = explode(" ", $line);
+         $result['STAT_loadavg']  = rtrim($words[count($words)-3], ',');
       }
    }
    return $result;
@@ -913,12 +913,13 @@ function apache_cachefile ( $options ) {
 }
 
 function apache_cmdline ( $options ) {
-   global $status_server, $status_url, $http_user, $http_pass, $http_port;
+   global $status_server, $status_url, $http_user, $http_pass, $http_port, $use_ssh;
+   $use_ssh = isset($options['use-ssh']) ? $options['use-ssh'] : $use_ssh;
    $srv = $status_server;
    if ( isset($options['server']) ) {
       $srv = $options['server'];
    }
-   elseif ( ! $options['use-ssh'] ) {
+   elseif ( ! $use_ssh ) {
       $srv = $options['host'];
    }
    $url = isset($options['url'])    ? $options['url']    : $status_url;
@@ -999,18 +1000,19 @@ function nginx_cachefile ( $options ) {
 }
 
 function nginx_cmdline ( $options ) {
-   global $status_server, $status_url, $http_user, $http_pass;
+   global $status_server, $status_url, $http_user, $http_pass, $http_port, $use_ssh;
+   $use_ssh = isset($options['use-ssh']) ? $options['use-ssh'] : $use_ssh;
    $srv = $status_server;
    if ( isset($options['server']) ) {
       $srv = $options['server'];
    }
-   elseif ( ! $options['use-ssh'] ) {
+   elseif ( ! $use_ssh ) {
       $srv = $options['host'];
    }
    $url = isset($options['url'])    ? $options['url']    : $status_url;
    $user = isset($options['http-user'])     ? $options['http-user']     : $http_user;
    $pass = isset($options['http-password']) ? $options['http-password'] : $http_pass;
-   $port = isset($options['port2']) ? ":$options[port2]" : '';
+   $port = isset($options['port2']) ? ":$options[port2]" : ":$http_port";
    $auth = ($user ? "--http-user=$user" : '') . ' ' . ($pass ? "--http-password=$pass" : '');
    return "wget $auth -U Cacti/1.0 -q -O - -T 5 \"http://$srv$port$url?auto\"";
 }
@@ -1315,7 +1317,8 @@ function mongodb_cachefile ( $options ) {
 }
 
 function mongodb_cmdline ( $options ) {
-   return "echo \"db._adminCommand({serverStatus:1, repl:2})\" | mongo";
+   $port = isset($options['port2']) ? " --port $options[port2]" : '';
+   return "echo \"db._adminCommand({serverStatus:1, repl:2})\" | mongo$port";
 }
 
 function mongodb_parse ( $options, $output ) {
