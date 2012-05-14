@@ -28,6 +28,7 @@ $ssh_user   = 'cacti';                          # SSH username
 $ssh_port   = 22;                               # SSH port
 $ssh_iden   = '-i /var/www/cacti/.ssh/id_rsa';  # SSH identity
 $ssh_tout   = 10;                               # SSH connect timeout
+$ssh_aliv   = 10;                               # SSH alive timeout
 $nc_cmd     = 'nc -C -q1';                      # How to invoke netcat
 $cache_dir  = '/tmp';  # If set, this uses caching to avoid multiple calls.
 $poll_time  = 300; # Adjust to match your polling interval.
@@ -570,7 +571,7 @@ function sanitize_filename($options, $keys, $tail) {
 # Execute the command to get the output and return it.
 # ============================================================================
 function get_command_result($cmd, $options) {
-   global $debug, $ssh_user, $ssh_port, $ssh_iden, $ssh_tout, $use_ssh;
+   global $debug, $ssh_user, $ssh_port, $ssh_iden, $ssh_tout, $ssh_aliv, $use_ssh;
    $use_ssh = isset($options['use-ssh']) ? $options['use-ssh'] : $use_ssh;
 
    # If there is a --file, we just use that.
@@ -580,8 +581,8 @@ function get_command_result($cmd, $options) {
 
    # Build the SSH command line.
    $port = isset($options['port']) ? $options['port'] : $ssh_port;
-   $ssh  = "ssh -q -o \"ConnectTimeout $ssh_tout\" -o \"StrictHostKeyChecking no\" "
-         . "$ssh_user@$options[host] -p $port $ssh_iden";
+   $ssh  = "ssh -q -o \"ConnectTimeout $ssh_tout\" -o \"ServerAliveInterval $ssh_aliv\" "
+            . "-o \"StrictHostKeyChecking no\" $ssh_user@$options[host] -p $port $ssh_iden";
    debug($ssh);
    $final_cmd = $use_ssh ? "$ssh '$cmd'" : $cmd;
    debug($final_cmd);
