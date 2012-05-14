@@ -169,7 +169,7 @@ function validate_options($options) {
    debug($options);
    $opts = array('host', 'port', 'items', 'nocache', 'type', 'url', 'http-user',
                  'file', 'http-password', 'server', 'port2', 'use-ssh', 
-                 'device', 'volume', 'threadpool');
+                 'device', 'threadpool');
    # Required command-line options
    foreach ( array('host', 'items', 'type') as $option ) {
       if ( !isset($options[$option]) || !$options[$option] ) {
@@ -218,7 +218,6 @@ General options:
    --http-user       The HTTP authentication user
    --http-password   The HTTP authentication password
    --openvz_cmd      The command to use when fetching OpenVZ statistics
-   --volume          The volume name for df
 
 EOF;
    die($usage);
@@ -1376,32 +1375,32 @@ function mongodb_parse ( $options, $output ) {
 }
 
 function df_parse ( $options, $output ) {
-   if ( !isset($options['volume']) ) {
-      die("--volume is required for --type df");
+   if ( !isset($options['device']) ) {
+      die("--device is required for --type df");
    }
    foreach ( explode("\n", $output) as $line ) {
       if ( preg_match_all('/\S+/', $line, $words) ) {
          $words = $words[0];
-         if ( count($words) > 0 && $words[0] === $options['volume'] ) {
+         if ( count($words) > 0 && $words[0] === $options['device'] ) {
             if ( count($words) > 3 ) {
                return array(
-                  'DISKFREE_used'      => $words[2]*1024,
-                  'DISKFREE_available' => $words[3]*1024,
+                  'DISKFREE_used'      => $words[2],
+                  'DISKFREE_available' => $words[3],
                );
             }
          }
       }
    }
-   debug("Looks like we did not find $options[volume] in the output");
+   debug("Looks like we did not find $options[device] in the output");
    return array();
 }
 
 function df_cachefile ( $options ) {
-   return sanitize_filename($options, array('host', 'volume'), 'df');
+   return sanitize_filename($options, array('host', 'device'), 'df');
 }
 
 function df_cmdline ( $options ) {
-   return "df -k -P";
+   return "df -PB1";
 }
 
 function netdev_parse ( $options, $output ) {

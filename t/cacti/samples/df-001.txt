@@ -1,4 +1,10 @@
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/vzfs             30720000   4488715  26231285  15% /
-tmpfs                  4147072         0   4147072   0% /lib/init/rw
-tmpfs                  4147072         0   4147072   0% /dev/shm
+Filesystem                1-blocks       Used  Available Capacity Mounted on
+rootfs                 10724835328 6715097088 4009738240      63% /
+udev                    2000601088          0 2000601088       0% /dev
+tmpfs                    401510400     741376  400769024       1% /run
+/dev/mapper/root       10724835328 6715097088 4009738240      63% /
+tmpfs                      5242880          0    5242880       0% /run/lock
+tmpfs                    803016704     327680  802689024       1% /tmp
+tmpfs                    803016704   11157504  791859200       2% /run/shm
+/dev/mapper/vg--1-boot    99942400   22286336   77656064      23% /boot
+/dev/mapper/home        5356126208 2530299904 2825826304      48% /home

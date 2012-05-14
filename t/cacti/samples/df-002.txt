@@ -1,10 +1,18 @@
-Filesystem         1024-blocks      Used Available Capacity Mounted on
-/dev/sda6              2064208    887520   1071832      46% /
-tmpfs                  8160308         0   8160308       0% /dev/shm
-/dev/sda1               253871     49432    191332      21% /boot
-/dev/mapper/vg00-data  52701748  44171784   5852820      89% /data
-/dev/mapper/vg00-server   4128448    426876   3491860      11% /server
-/dev/sda7              1032088     44896    934764       5% /tmp
-/dev/sda3              4128448    759032   3159704      20% /usr
-/dev/sda5              4128448    324624   3594112       9% /var
-/dev/mapper/vg01-data1 141077368  90639264  50438104      65% /data1
+Filesystem         1-blocks      Used Available Capacity Mounted on
+/dev/sda3            3691827200 2019528704 1484763136      58% /
+tmpfs                6310985728         0 6310985728       0% /lib/init/rw
+udev                 6305603584    229376 6305374208       1% /dev
+tmpfs                6310985728     77824 6310907904       1% /dev/shm
+/dev/sda1            191142912  24518656 156755968      14% /boot
+/dev/mapper/vg--0000011114--F24--1-fs 21990222069760 18942027943936 3048194125824      87% /var/lib/fs/devices/0000011114-F24
+/dev/mapper/vg--0000011114--F24--1-data1 4395909496832 4196957835264 198951661568      96% /home/data1
+/dev/mapper/vg--0000011114--F24--1-data2 4395909496832 4197900173312 198009323520      96% /home/data2
+/dev/mapper/vg--0000011115--B21-data3 4395909496832 4198501429248 197408067584      96% /home/data3
+/dev/mapper/vg--0000011115--F24-data4 4395909496832 4198223532032 197685964800      96% /home/data4
+/dev/mapper/vg--0000011115--B21-data5 4395909496832 4198517174272 197392322560      96% /home/data5
+/dev/mapper/vg--0000011115--F24-data6 4395909496832 4198588678144 197320818688      96% /home/data6
+/dev/mapper/vg--0000011115--F24-data7 4395909496832 4198597537792 197311959040      96% /home/data7
+/dev/mapper/vg--0000011114--F24--1-data8 4395909496832 1258822971392 3137086525440      29% /home/data8
+/dev/mapper/vg--0000011114--B12-fs 8793955991552 8751652556800 42303434752     100% /var/lib/fs/devices/0000011114-B12
+/dev/mapper/vg--0000011115--F24-fs 21990222069760 18941954465792 3048267603968      87% /var/lib/fs/devices/0000011115-F24
+/dev/mapper/vg--0000011115--B21-fs 17590048980992 17426137882624 163911098368     100% /var/lib/fs/devices/0000011115-B21

@@ -462,10 +462,10 @@ is(
 );
 
 is_deeply(
-   df_parse( array('volume' => '/dev/vzfs'), file_get_contents('samples/df-001.txt') ),
+   df_parse( array('device' => '/dev/mapper/home'), file_get_contents('samples/df-001.txt') ),
    array(
-      'DISKFREE_used'      => '4596444160',
-      'DISKFREE_available' => '26860835840',
+      'DISKFREE_used'      => '2530299904',
+      'DISKFREE_available' => '2825826304',
    ),
    'samples/df-001.txt'
 );
@@ -476,17 +476,17 @@ is(
       'type'    => 'df',
       'host'    => 'localhost',
       'items'   => 'jw,jx',
-      'volume'  => '/dev/vzfs',
+      'device'  => '/dev/mapper/home',
    )),
-   'jw:4596444160 jx:26860835840',
+   'jw:2530299904 jx:2825826304',
    'main(samples/df-001.txt)'
 );
 
 is_deeply(
-   df_parse( array('volume' => '/dev/mapper/vg00-server'), file_get_contents('samples/df-002.txt') ),
+   df_parse( array('device' => '/dev/mapper/vg--0000011115--F24-fs'), file_get_contents('samples/df-002.txt') ),
    array(
-      'DISKFREE_used'      => '437121024',
-      'DISKFREE_available' => '3575664640',
+      'DISKFREE_used'      => '18941954465792',
+      'DISKFREE_available' => '3048267603968',
    ),
    'samples/df-002.txt'
 );
@@ -497,9 +497,9 @@ is(
       'type'    => 'df',
       'host'    => 'localhost',
       'items'   => 'jw,jx',
-      'volume'  => '/dev/mapper/vg00-server',
+      'device'  => '/dev/mapper/vg--0000011115--F24-fs',
    )),
-   'jw:437121024 jx:3575664640',
+   'jw:18941954465792 jx:3048267603968',
    'main(samples/df-002.txt)'
 );
 

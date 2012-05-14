@@ -608,8 +608,10 @@
             },
          },
          items => [
+            # Colors from
+            # http://www.colourlovers.com/palette/765305/japan9items => [
             {  item   => 'DISKFREE_used',
-               color  => '0E4E5A',
+               color  => '93CCC6',
                task   => 'hash_09_VER_0ad2b0870f44cecee4fda91ba14fdc76',
                type   => 'AREA',
                hashes => [
@@ -620,7 +622,7 @@
                ],
             },
             {  item   => 'DISKFREE_available',
-               color  => '62BECB',
+               color  => 'E3DFBA',
                task   => 'hash_09_VER_fba00ed6c841136f97d14ef56db97131',
                type   => 'STACK',
                hashes => [
@@ -1164,7 +1166,7 @@
          hash         => 'hash_03_VER_9233ab2796cf312a44f54b91390d1789',
          input_string => '<path_php_binary> -q <path_cacti>/scripts/ss_get_by_ssh.php '
                        . '--host <hostname> --type df --items <items> '
-                       . '--volume <volume>',
+                       . '--device <device>',
          prompt_title => 1,
          inputs => [
             {  allow_nulls => '',
@@ -1173,7 +1175,7 @@
             },
             {  allow_nulls => '',
                hash        => 'hash_07_VER_aaf730665b5ee935ee71466ca12fd5c6',
-               name        => 'volume',
+               name        => 'device',
                override    => 1,
             },
          ],
