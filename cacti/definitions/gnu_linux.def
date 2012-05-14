@@ -609,7 +609,7 @@
          },
          items => [
             # Colors from
-            # http://www.colourlovers.com/palette/765305/japan9items => [
+            # http://www.colourlovers.com/palette/765305/japan9items
             {  item   => 'DISKFREE_used',
                color  => '93CCC6',
                task   => 'hash_09_VER_0ad2b0870f44cecee4fda91ba14fdc76',
