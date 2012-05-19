@@ -613,4 +613,25 @@ is(
    'main(samples/vmstat-001.txt)'
 );
 
+is_deeply(
+   vgspace_parse( array('group' => 'vg-0000011114-F24-1'), file_get_contents('samples/vgs-001.txt') ),
+   array(
+      'VG_used'      => '35209068150784',
+      'VG_available' => '6779954003968',
+   ),
+   'samples/vgs-001.txt'
+);
+
+is(
+   ss_get_by_ssh( array(
+      'file'    => 'samples/vgs-001.txt',
+      'type'    => 'vgspace',
+      'host'    => 'localhost',
+      'items'   => 'kr,ks',
+      'group'   => 'vg-0000011114-F24-1',
+   )),
+   'kr:35209068150784 ks:6779954003968',
+   'main(samples/vgs-001.txt)'
+);
+
 ?>

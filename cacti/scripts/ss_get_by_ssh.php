@@ -170,7 +170,7 @@ function validate_options($options) {
    debug($options);
    $opts = array('host', 'port', 'items', 'nocache', 'type', 'url', 'http-user',
                  'file', 'http-password', 'server', 'port2', 'use-ssh', 
-                 'device', 'threadpool');
+                 'device', 'threadpool', 'group');
    # Required command-line options
    foreach ( array('host', 'items', 'type') as $option ) {
       if ( !isset($options[$option]) || !$options[$option] ) {
@@ -198,7 +198,8 @@ option without a value after it, the option is ignored.  For options such as
 
 General options:
 
-   --device          The device name for diskstats and netdev
+   --device          The device name for diskstats, interface name for netdev
+                     or device path for df
    --file            Get input from this file instead of via SSH command
    --host            Hostname to connect to (via SSH)
    --items           Comma-separated list of the items whose data you want
@@ -211,9 +212,10 @@ General options:
                      stats and --host for memcached stats. If you specify
                      '--use-ssh 0' then default is --host for HTTP stats too.
    --threadpool      Name of ThreadPool in JMX (i.e. http-8080 or jk-8009)
+   --group           The group name for vgspace
    --type            One of apache, nginx, proc_stat, w, memory, memcached,
                      diskstats, openvz, redis, jmx, mongodb, df, netdev, 
-                     netstat, vmstat (more are TODO)
+                     netstat, vmstat, vgspace (more are TODO)
    --url             The url, such as /server-status, where server status lives
    --use-ssh         Whether to connect via SSH to gather info (default yes).
    --http-user       The HTTP authentication user
@@ -475,6 +477,8 @@ function ss_get_by_ssh( $options ) {
       'NETSTAT_unknown'                   =>  'kk',
       'VMSTAT_pswpin'                     =>  'ko',
       'VMSTAT_pswpout'                    =>  'kp',
+      'VG_used'                           =>  'kr',
+      'VG_available'                      =>  'ks',
    );
 
    # Prepare and return the output.  The output we have right now is the whole
@@ -582,7 +586,7 @@ function get_command_result($cmd, $options) {
    # Build the SSH command line.
    $port = isset($options['port']) ? $options['port'] : $ssh_port;
    $ssh  = "ssh -q -o \"ConnectTimeout $ssh_tout\" -o \"ServerAliveInterval $ssh_aliv\" "
-            . "-o \"StrictHostKeyChecking no\" $ssh_user@$options[host] -p $port $ssh_iden";
+         . "-o \"StrictHostKeyChecking no\" $ssh_user@$options[host] -p $port $ssh_iden";
    debug($ssh);
    $final_cmd = $use_ssh ? "$ssh '$cmd'" : $cmd;
    debug($final_cmd);
@@ -1495,3 +1499,38 @@ function vmstat_cmdline ( $options ) {
    return "cat /proc/vmstat";
 }
 
+# ============================================================================
+# Gets and parses the 'vgs' command from Linux.
+# You can test it like this, as root:
+# su - cacti -c 'env -i php /var/www/cacti/scripts/ss_get_by_ssh.php --type vgspace --host 127.0.0.1 --items kr,ks'
+# ============================================================================
+
+function vgspace_cachefile ( $options ) {
+   return sanitize_filename($options, array('host', 'port', 'group'), 'vgspace');
+}
+
+function vgspace_cmdline ( $options ) {
+   # Executing with sudo is the simplest (and possibly most secure) way to let
+   # an unprivileged user read the output
+   return "sudo vgs --noheadings --units B --nosuffix -o vg_name,vg_size,vg_free";
+}
+
+function vgspace_parse ( $options, $output ) {
+   if ( !isset($options['group']) ) {
+      die("--group is required for --type vgspace");
+   }
+   $lines = explode("\n", $output);
+   foreach ( $lines as $line ) {
+      if ( preg_match_all('/\S+/', $line, $words) ) {
+         $words = $words[0];
+         if ( $words[0] === $options['group'] ) {
+            return array(
+               'VG_used'      => big_sub($words[1], $words[2]),
+               'VG_available' => $words[2],
+            );
+         }
+      }
+   }
+   debug("Looks like we did not find $options[group] in the output");
+   return array();
+}

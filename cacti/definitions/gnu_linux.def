@@ -1066,6 +1066,50 @@
             },
          ],
       },
+      {  name       => 'LVM VG Space',
+         base_value => '1024',
+         hash       => 'hash_00_VER_e420f8019c806195b5d322b3a0f2fdd9',
+         override   => { title => 1 },
+         dt         => {
+            hash       => 'hash_01_VER_a88548e6dd1953b73e5618637c502728',
+            input      => 'Get LVM VG Space',
+            VG_used => {
+               data_source_type_id => '1',
+               hash => 'hash_08_VER_9fc36f6e1ff41be5eb9489a35689d76d',
+            },
+            VG_available => {
+               data_source_type_id => '1',
+               hash => 'hash_08_VER_95d0f250afe9850afd9b7a50da566bb4',
+            },
+         },
+         # Colors from
+         # http://www.colourlovers.com/palette/90734/Newly_Risen_Moon
+         items => [
+            {  item   => 'VG_used',
+               color  => '696758',
+               task   => 'hash_09_VER_6c2c9881d8c9bf141b13793fbde11036',
+               type   => 'AREA',
+               hashes => [
+                  'hash_10_VER_340fde2bb391a26814ab3b27584c612c',
+                  'hash_10_VER_7aa64d1fb77adc3f33a051feca2b17f9',
+                  'hash_10_VER_75ba4922027688695e562f3a685b72f3',
+                  'hash_10_VER_54d01139bfc8977ba89d27ba5de53216'
+               ],
+            },
+            {  item   => 'VG_available',
+               color  => 'EEE6AB',
+               task   => 'hash_09_VER_5729a7d794ca62df287ff2a918e9e2dc',
+               type   => 'STACK',
+               cdef   => 'Negate',
+               hashes => [
+                  'hash_10_VER_2b5a78d532bdeeca54a6946e4a7e83b2',
+                  'hash_10_VER_a6e7c1dfa13059ed8076ac8f58142f9b',
+                  'hash_10_VER_90176f2922d70cac9333a15a5378919e',
+                  'hash_10_VER_df45f5b6c6cfaa0c6fdbe2c3adb006a3'
+               ],
+            },
+         ],
+      },
    ],
    inputs => {
       'Get W' => {
@@ -1279,6 +1323,29 @@
          outputs => {
             VMSTAT_pswpin  => 'hash_07_VER_c37cd12d284f402e4e6550f1c4c1c363',
             VMSTAT_pswpout => 'hash_07_VER_ca2301a5593e49bc16df695452881a96',
+         },
+      },
+      'Get LVM VG Space' => {
+         type_id      => 1,
+         hash         => 'hash_03_VER_0215b45ff0140a26dc6d7a59f907d6ec',
+         input_string => '<path_php_binary> -q <path_cacti>/scripts/ss_get_by_ssh.php '
+                       . '--host <hostname> --type vgspace --items <items> '
+                       . '--group <group>',
+         prompt_title => 1,
+         inputs => [
+            {  allow_nulls => '',
+               hash        => 'hash_07_VER_f6ac1eb1973fd741a86b86a15199992d',
+               name        => 'hostname'
+            },
+            {  allow_nulls => '',
+               hash        => 'hash_07_VER_8a4114c5fd0da3c02f886645fa77de23',
+               name        => 'group',
+               override    => 1,
+            },
+         ],
+         outputs => {
+            VG_used      => 'hash_07_VER_ef8c0c4a71d4358f2b4cfc3a80a6e2df',
+            VG_available => 'hash_07_VER_2354c5e3984c5bfb79350d272160d5cc',
          },
       },
    },
