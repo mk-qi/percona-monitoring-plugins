@@ -604,7 +604,7 @@ templates. One thing remains: you need to resolve the duplication you created by
 copy/pasting hash values all over the place.  There's a tool to do this.  Run it
 like this::
 
-   $ pmp-cacti-unique-hashes definitions/gnu_linux.def > temp.def
+   $ pmp-cacti-make-hashes definitions/gnu_linux.def > temp.def
 
 Now examine the generated file ``temp.def`` and make sure it is okay.  You can
 use ``vimdiff`` to compare it to the original definitions file.  Ensure that you
