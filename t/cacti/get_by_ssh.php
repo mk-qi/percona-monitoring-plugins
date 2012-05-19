@@ -634,4 +634,23 @@ is(
    'main(samples/vgs-001.txt)'
 );
 
+is_deeply(
+   exim_queue_parse( null, file_get_contents('samples/exim-001.txt') ),
+   array(
+      'EXIM_messages' => '697',
+   ),
+   'samples/exim-001.txt'
+);
+
+is(
+   ss_get_by_ssh( array(
+      'file'    => 'samples/exim-001.txt',
+      'type'    => 'exim_queue',
+      'host'    => 'localhost',
+      'items'   => 'kt',
+   )),
+   'kt:697',
+   'main(samples/exim-001.txt)'
+);
+
 ?>

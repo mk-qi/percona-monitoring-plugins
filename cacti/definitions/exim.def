@@ -1,0 +1,76 @@
+# This is the template definition file.  To use it, see pmp-cacti-template.
+#
+# This program is copyright (c) 2008 Baron Schwartz. Feedback and improvements
+# are welcome.
+#
+# THIS PROGRAM IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+# MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, version 2.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA  02111-1307  USA.
+
+# Autobuild: ss_get_by_ssh.php
+
+{
+   name   => 'Exim Server',
+   hash   => 'hash_02_VER_2d197c53b1b4bf9d39823144e56fcad1',
+   version => {
+      version => '1.1.8',
+      hash    => 'hash_06_VER_396a2aee921013c574136f2fae7360f6',
+   },
+   checksum => 'hash_06_VER_880ee6eecf512af0e9b32018dd935033',
+   graphs => [
+      {  name       => 'Exim Queue',
+         base_value => '1000',
+         hash       => 'hash_00_VER_d67986d354bb6875ef72a16f0e985477',
+         override   => { title => 1 },
+         dt         => {
+            hash       => 'hash_01_VER_8df96dc7bb80b26cb6763d19f5ebe48a',
+            input      => 'Get Exim Queue',
+            EXIM_messages => {
+               data_source_type_id => '1',
+               hash => 'hash_08_VER_f1afa85362f0fa61c7395b5493e432d5',
+            },
+         },
+         items => [
+            # Colors from
+            # http://www.colourlovers.com/palette/806955/[slow_motion]
+            {  item   => 'EXIM_messages',
+               color  => '2E0D23',
+               task   => 'hash_09_VER_93b32bb8bb4c9c11bfa3cfa09b6b5133',
+               type   => 'AREA',
+               hashes => [
+                  'hash_10_VER_65e4d176942b54a8898dcbf9b0c27096',
+                  'hash_10_VER_4fe89dd42c5644ec937479804e3b3fb2',
+                  'hash_10_VER_265da408606552d6e8a11bcac9748e66',
+                  'hash_10_VER_db0e145813c754afdf73ef7b0537f867'
+               ],
+            },
+         ],
+      },
+   ],
+   inputs => {
+      'Get Exim Queue' => {
+         type_id      => 1,
+         hash         => 'hash_03_VER_fe4b1a5f0142b46d180636e09e39cff5',
+         input_string => '<path_php_binary> -q <path_cacti>/scripts/ss_get_by_ssh.php '
+                       . '--host <hostname> --type exim_queue --items <items> ',
+         prompt_title => 1,
+         inputs => [
+            {  allow_nulls => '',
+               hash        => 'hash_07_VER_075ac2a691b676639ebc5f70a4c33c96',
+               name        => 'hostname'
+            },
+         ],
+         outputs => {
+            EXIM_messages => 'hash_07_VER_62fcbb5206358151f8253e7a6bec8c94',
+         },
+      },
+   },
+};

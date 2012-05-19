@@ -215,7 +215,7 @@ General options:
    --group           The group name for vgspace
    --type            One of apache, nginx, proc_stat, w, memory, memcached,
                      diskstats, openvz, redis, jmx, mongodb, df, netdev, 
-                     netstat, vmstat, vgspace (more are TODO)
+                     netstat, vmstat, vgspace, exim_queue (more are TODO)
    --url             The url, such as /server-status, where server status lives
    --use-ssh         Whether to connect via SSH to gather info (default yes).
    --http-user       The HTTP authentication user
@@ -479,6 +479,7 @@ function ss_get_by_ssh( $options ) {
       'VMSTAT_pswpout'                    =>  'kp',
       'VG_used'                           =>  'kr',
       'VG_available'                      =>  'ks',
+      'EXIM_messages'                     =>  'kt',
    );
 
    # Prepare and return the output.  The output we have right now is the whole
@@ -1533,4 +1534,27 @@ function vgspace_parse ( $options, $output ) {
    }
    debug("Looks like we did not find $options[group] in the output");
    return array();
+}
+
+# ============================================================================
+# Gets and parses the 'exim' command from Linux.
+# Options used: none.
+# You can test it like this, as root:
+# su - cacti -c 'env -i php /var/www/cacti/scripts/ss_get_by_ssh.php --type exim_queue --host 127.0.0.1 --items kt'
+# ============================================================================
+
+function exim_queue_cachefile ( $options ) {
+   return sanitize_filename($options, array('host', 'port'), 'exim_queue');
+}
+
+function exim_queue_cmdline ( $options ) {
+   # Executing with sudo is the simplest (and possibly most secure) way to let
+   # an unprivileged user read the output
+   return "sudo exim -bpc";
+}
+
+function exim_queue_parse ( $options, $output ) {
+   return array(
+      'EXIM_messages' => trim($output),
+   );
 }
