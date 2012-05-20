@@ -40,7 +40,8 @@ $debug_log  = FALSE; # If $debug_log is a filename, it'll be used.
 
 # Parameters for specific graphs can be specified here, or in the .cnf.php file.
 $status_server = 'localhost';             # Where to query for HTTP status
-$status_url    = '/server-status';        # The URL path to HTTP status
+$status_url    = '/server-status';        # The URL path to HTTP or PHP-FPM
+                                          # status
 $http_user     = '';                      # HTTP authentication
 $http_pass     = '';                      # HTTP authentication
 $http_port     = 80;                      # Which port Apache listens on
@@ -215,7 +216,7 @@ General options:
    --group           The group name for vgspace
    --type            One of apache, nginx, proc_stat, w, memory, memcached,
                      diskstats, openvz, redis, jmx, mongodb, df, netdev, 
-                     netstat, vmstat, vgspace, exim_queue (more are TODO)
+                     netstat, vmstat, vgspace, exim_queue, phpfpm (more are TODO)
    --url             The url, such as /server-status, where server status lives
    --use-ssh         Whether to connect via SSH to gather info (default yes).
    --http-user       The HTTP authentication user
@@ -480,6 +481,9 @@ function ss_get_by_ssh( $options ) {
       'VG_used'                           =>  'kr',
       'VG_available'                      =>  'ks',
       'EXIM_messages'                     =>  'kt',
+      'PHPFPM_requests'                   =>  'ku',
+      'PHPFPM_idle_processes'             =>  'kw',
+      'PHPFPM_active_processes'           =>  'kx',
    );
 
    # Prepare and return the output.  The output we have right now is the whole
@@ -1557,4 +1561,45 @@ function exim_queue_parse ( $options, $output ) {
    return array(
       'EXIM_messages' => trim($output),
    );
+}
+
+# ============================================================================
+# Gets /status from php-fpm, using a HTTP server as a fastcgi proxy.
+# You can test it like this, as root:
+# su - cacti -c 'env -i php /var/www/cacti/scripts/ss_get_by_ssh.php --type phpfpm --url /fpm-status --host 127.0.0.1 --items ku,kw,kx'
+# ============================================================================
+function phpfpm_cachefile ( $options ) {
+   return sanitize_filename($options, array('host', 'port', 'port2', 'server', 'url'), 'phpfpm');
+}
+
+function phpfpm_cmdline ( $options ) {
+   global $status_server, $status_url, $http_user, $http_pass, $http_port, $use_ssh;
+   $use_ssh = isset($options['use-ssh']) ? $options['use-ssh'] : $use_ssh;
+   $srv = $status_server;
+   if ( isset($options['server']) ) {
+      $srv = $options['server'];
+   }
+   elseif ( ! $use_ssh ) {
+      $srv = $options['host'];
+   }
+   $url = isset($options['url']) ? $options['url'] : $status_url;
+   $user = isset($options['http-user']) ? $options['http-user'] : $http_user;
+   $pass = isset($options['http-password']) ? $options['http-password'] : $http_pass;
+   $port = isset($options['port2']) ? ":$options[port2]" : ":$http_port";
+   $auth = ($user ? "--http-user=$user" : '') . ' ' . ($pass ? "--http-password=$pass" : '');
+   return "wget $auth -U Cacti/1.0 -q -O - -T 5 \"http://$srv$port$url?json\"";
+}
+
+function phpfpm_parse ( $options, $output ) {
+   $counters = json_decode($output, true);
+   if ( !is_array($counters) ) {
+       debug("Looks like output is not a JSON encoded array");
+       return array();
+   }
+   $result = array(
+      'PHPFPM_requests'         => (string)$counters["accepted conn"],
+      'PHPFPM_idle_processes'   => (string)$counters["idle processes"],
+      'PHPFPM_active_processes' => (string)$counters["active processes"],
+   );
+   return $result;
 }

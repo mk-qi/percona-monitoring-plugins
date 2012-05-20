@@ -653,4 +653,46 @@ is(
    'main(samples/exim-001.txt)'
 );
 
+is_deeply(
+   phpfpm_parse( null, file_get_contents('samples/phpfpm-001.txt') ),
+   array(
+      'PHPFPM_requests'         => '33513142',
+      'PHPFPM_idle_processes'   => '44',
+      'PHPFPM_active_processes' => '6',
+   ),
+   'samples/phpfpm-001.txt'
+);
+
+is(
+   ss_get_by_ssh( array(
+      'file'    => 'samples/phpfpm-001.txt',
+      'type'    => 'phpfpm',
+      'host'    => 'localhost',
+      'items'   => 'ku,kw,kx',
+   )),
+   'ku:33513142 kw:44 kx:6',
+   'main(samples/phpfpm-001.txt)'
+);
+
+is_deeply(
+   phpfpm_parse( null, file_get_contents('samples/phpfpm-002.txt') ),
+   array(
+      'PHPFPM_requests'         => '40',
+      'PHPFPM_idle_processes'   => '19',
+      'PHPFPM_active_processes' => '1',
+   ),
+   'samples/phpfpm-002.txt'
+);
+
+is(
+   ss_get_by_ssh( array(
+      'file'    => 'samples/phpfpm-002.txt',
+      'type'    => 'phpfpm',
+      'host'    => 'localhost',
+      'items'   => 'ku,kw,kx',
+   )),
+   'ku:40 kw:19 kx:1',
+   'main(samples/phpfpm-002.txt)'
+);
+
 ?>

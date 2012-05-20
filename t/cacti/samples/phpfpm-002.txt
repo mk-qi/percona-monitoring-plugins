@@ -1,0 +1,1 @@
+{"pool":"www","process manager":"static","start time":1337538699,"start since":684,"accepted conn":40,"listen queue":0,"max listen queue":0,"listen queue len":0,"idle processes":19,"active processes":1,"total processes":20,"max active processes":1,"max children reached":0}

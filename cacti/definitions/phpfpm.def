@@ -1,0 +1,123 @@
+# This is the template definition file.  To use it, see pmp-cacti-template.
+#
+# This program is copyright (c) 2008 Baron Schwartz. Feedback and improvements
+# are welcome.
+#
+# THIS PROGRAM IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+# MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, version 2.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA  02111-1307  USA.
+
+# Autobuild: ss_get_by_ssh.php
+
+{
+   name   => 'PHP FPM Pool',
+   hash   => 'hash_02_VER_c5b3f2e96eb9a44352e29068438d55d9',
+   version => {
+      version => '1.1.8',
+      hash    => 'hash_06_VER_ce4a4e67a9404278be62af332c1bab9e',
+   },
+   checksum => 'hash_06_VER_e1271959cd139e9314884de420bdf85e',
+   graphs => [
+      {  name       => 'PHP FPM Requests',
+         base_value => '1000',
+         hash       => 'hash_00_VER_f7f5f49b701a684c86d8104168416def',
+         override   => { title => 1 },
+         dt         => {
+            hash       => 'hash_01_VER_921aec2eca38cf8528c03a56d350c879',
+            input      => 'Get PHP FPM Stats',
+            PHPFPM_requests => {
+               data_source_type_id => '3',
+               hash => 'hash_08_VER_b78a95105bd874163a3998b0f4d81de5'
+            },
+         },
+         items => [
+            {  item   => 'PHPFPM_requests',
+               color  => '803405',
+               task   => 'hash_09_VER_a3cc08f4b03206af12abbbdcb3454314',
+               type   => 'AREA',
+               hashes => [
+                  'hash_10_VER_325e56bf2bb2d8a197bfc16dd0b4124a',
+                  'hash_10_VER_f767455c1469f5e666b56dd1d76905f2',
+                  'hash_10_VER_c02f1eafe9e9d677ec2dc6b27f76e434',
+                  'hash_10_VER_db2b580d282a88cce1a3a64e246b5382'
+               ],
+            },
+         ],
+      },
+      {  name       => 'PHP FPM Processes',
+         base_value => '1000',
+         hash       => 'hash_00_VER_0ca235f2af55a96a960c873ca60f9a98',
+         dt         => {
+            hash       => 'hash_01_VER_9f49b2cb94b230b6261c85fe51a29c95',
+            input      => 'Get PHP FPM Stats',
+            PHPFPM_active_processes => {
+               data_source_type_id => '1',
+               hash => 'hash_08_VER_b9706ffa52669bc57fb197f7f6aea175'
+            },
+            PHPFPM_idle_processes => {
+               data_source_type_id => '1',
+               hash => 'hash_08_VER_12f5d8396ccd2a02dac106d399cf3c2e'
+            },
+         },
+         items => [
+            # Colors from
+            # http://www.colourlovers.com/palette/848743/(%E2%97%95_%E2%80%9D_%E2%97%95)
+            {  item   => 'PHPFPM_active_processes',
+               color  => 'F8CA00',
+               task   => 'hash_09_VER_0b0d83f57b02f5631b8225e5fe2caccd',
+               type   => 'AREA',
+               hashes => [
+                  'hash_10_VER_5c61e2d9f7d0f037f6952c7ad2942911',
+                  'hash_10_VER_0a50c1a4e44b5fa374be03731677a5af',
+                  'hash_10_VER_6bb94ef71b813b8b4d0d469172e63a0b',
+                  'hash_10_VER_36c581aca8318934946848516426d38d'
+               ],
+            },
+            {  item   => 'PHPFPM_idle_processes',
+               color  => '8A9B0F',
+               task   => 'hash_09_VER_6bbf9e531d59822189349efbdaef445a',
+               type   => 'STACK',
+               hashes => [
+                  'hash_10_VER_d2d86c6639bde8954ee78d8221c215eb',
+                  'hash_10_VER_68f8b2a32b86004d74913ab5612b45fb',
+                  'hash_10_VER_e5e943c3eb2e9ca0bee56ee254b865be',
+                  'hash_10_VER_4348a2f0563224363311095f664293fb'
+               ],
+            },
+         ],
+      },
+   ],
+   inputs => {
+      'Get PHP FPM Stats' => {
+         type_id      => 1,
+         hash         => 'hash_03_VER_3992059520d23ff85384fcc8b73dda3f',
+         input_string => '<path_php_binary> -q <path_cacti>/scripts/ss_get_by_ssh.php '
+                       . '--host <hostname> --type phpfpm --url <url> --items <items>',
+         prompt_title => 1,
+         inputs => [
+            {  allow_nulls => '',
+               hash        => 'hash_07_VER_4f6745f49f4e5c1139f7a6f1d1c24f2d',
+               name        => 'hostname'
+            },
+            {  allow_nulls => '',
+               hash        => 'hash_07_VER_8a3debdcbf3a50603793e5175e536524',
+               name        => 'url',
+               override    => 1,
+            },
+         ],
+         outputs => {
+            PHPFPM_requests         => 'hash_07_VER_d4f5308bbc75150472928009a4843543',
+            PHPFPM_active_processes => 'hash_07_VER_b8bc3f5d895255d4ce914161fae5d437',
+            PHPFPM_idle_processes   => 'hash_07_VER_b3f9e4593449f8758eea260b0fa140e4',
+         },
+      },
+   },
+};
